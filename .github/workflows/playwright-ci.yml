@@ -1,0 +1,65 @@
+name: Playwright CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npm run test
+        env:
+          ENV: qa
+          BROWSER: chromium
+          HEADLESS: true
+          REMOTE_ENABLED: false
+
+      - name: Run Cucumber tests for BDD reporting
+        run: npm run test:cucumber
+        env:
+          ENV: qa
+          BROWSER: chromium
+          HEADLESS: true
+
+      - name: Generate Allure report
+        run: npm run report:allure
+
+      - name: Generate HTML report
+        run: npm run report:html
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-reports
+          path: |
+            reports/playwright-html
+            reports/allure-report
+            reports/extent-report.html
+            reports/cucumber-report.html
+            reports/cucumber-report.json
+            screenshots

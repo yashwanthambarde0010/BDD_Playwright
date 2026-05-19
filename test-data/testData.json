@@ -1,0 +1,11 @@
+{
+  "login": {
+    "username": "testuser@example.com",
+    "password": "Password123",
+    "expectedUrlContains": "way2automation.com"
+  },
+  "search": {
+    "query": "automation",
+    "expectedResultCount": 10
+  }
+}

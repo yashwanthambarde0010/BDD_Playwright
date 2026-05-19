@@ -8,5 +8,16 @@
     "username": "//div[@id='load_box']//input[@name='username']",
     "password": "//div[@id='load_box']//input[@name='password']",
     "submitBtn": "//div[@id='load_box']//input[@value='Submit']"
+  },
+   "HomePage": {
+    "logo": "img[src*='way2automation']",
+    "allLinks": "a[href]",
+    "visibleImages": "img:visible"
+  },
+  "LoginPage": {
+    "username": "input[name='userName'], input[type='text']",
+    "password": "input[name='password'], input[type='password']",
+    "loginButton": "button[type='submit'], input[type='submit']",
+    "loginResult": "div.alert, .error, .message, .login-status"
   }
 }

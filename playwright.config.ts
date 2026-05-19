@@ -1,86 +1,76 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, FullConfig } from '@playwright/test';
+import { getEnvironmentConfig } from './config/environment';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+const config = getEnvironmentConfig();
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
+const projectDefinitions = [
+  {
+    name: 'chromium',
+    use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+  },
+  {
+    name: 'firefox',
+    use: { ...devices['Desktop Firefox'] },
+  },
+  {
+    name: 'edge',
+    use: { ...devices['Desktop Edge'], channel: 'msedge' },
+  },
+];
+
+const browserEnv = process.env.BROWSER?.toLowerCase();
+const selectedProjects = browserEnv
+  ? projectDefinitions.filter((project) => project.name === browserEnv)
+  : projectDefinitions;
+
+const getWorkerCount = () => {
+  const value = process.env.WORKERS?.trim();
+  if (!value) {
+    return process.env.CI ? 2 : undefined;
+  }
+
+  if (value.toLowerCase() === 'auto') {
+    return undefined;
+  }
+
+  if (/^\d+%$/.test(value)) {
+    return value;
+  }
+
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+};
+
 export default defineConfig({
   testDir: './tests',
-  /* Run tests in files in parallel */
   fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
-  },
-
-  /* Configure projects for major browsers */
-  projects: [
-   
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-   
-    {
-      name: 'Microsoft Edge',
-      use: { ...devices['Desktop Edge'] ,channel: 'msedge',headless:false },
-      
-    },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
+  workers: getWorkerCount(),
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'reports/playwright-html', open: 'never' }],
   ],
-
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  use: {
+    baseURL: config.baseUrl,
+    headless: config.headless,
+    ignoreHTTPSErrors: true,
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    trace: 'on-first-retry',
+    actionTimeout: config.timeout,
+    launchOptions: {
+      args: ['--start-maximized'],
+    },
+    connectOptions: config.remote.enabled && config.remote.url ? { wsEndpoint: config.remote.url } : undefined,
+  },
+  projects: selectedProjects,
+  outputDir: 'reports/test-results',
+  webServer: undefined,
+  metadata: {
+    environment: process.env.ENV || 'qa',
+    browser: process.env.BROWSER || config.browser,
+  },
+  globalSetup: undefined,
+  globalTeardown: undefined,
 });

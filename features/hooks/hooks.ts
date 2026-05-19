@@ -1,32 +1,25 @@
- import { Before, After, BeforeAll,AfterAll,Status} from '@cucumber/cucumber';
- import fs from 'fs';
+import { After, Before, Status } from '@cucumber/cucumber';
+import fs from 'fs';
 import path from 'path';
-
+import screenshotUtils from '../../utils/screenshotUtils';
 import { CustomWorld } from './world';
-
+import { Logger } from '../../utils/logger';
 
 Before(async function (this: CustomWorld) {
+    Logger.info('Initializing browser session for scenario');
     await this.init();
 });
 
-After(async function (this: CustomWorld) {
-     await this.close();
+After(async function (this: CustomWorld, scenario) {
+    if (scenario.result?.status === Status.FAILED && this.page) {
+        const screenshotPath = await screenshotUtils.takeScreenshot(this.page, 'cuke-failed');
+        const buffer = fs.readFileSync(screenshotPath);
+        await this.attach(buffer, 'image/png');
+        Logger.error(`Captured screenshot for failed scenario: ${screenshotPath}`);
+    }
+
+    await this.close();
+    Logger.info('Closed browser session for scenario');
 });
 
-After(async function (this: CustomWorld,scenario) {
-  if (scenario.result?.status === Status.FAILED && this.page) {
-    const screenshotPath = path.resolve(`screenshots/${Date.now()}.png`);
-
-    // Ensure folder exists
-    fs.mkdirSync(path.dirname(screenshotPath), { recursive: true });
-
-    // Capture and save screenshot
-    await this.page.screenshot({ path: screenshotPath, fullPage: true });
-
-    // Attach screenshot to report (if supported by reporter)
-    const imageBuffer = fs.readFileSync(screenshotPath);
-    await this.attach(imageBuffer, 'image/png');
-   
-  }
- });
  
