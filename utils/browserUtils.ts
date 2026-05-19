@@ -105,11 +105,6 @@ export class BrowserUtils {
       },
       ignoreHTTPSErrors: true,
       acceptDownloads: true,
-      recordVideo: config.recordVideo
-        ? {
-            dir: 'test-results/videos'
-          }
-        : undefined
     });
   }
 

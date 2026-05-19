@@ -6,7 +6,7 @@ export interface EnvironmentConfig {
   slowMo?: number;
   viewportWidth?: number;
   viewportHeight?: number;
-  recordVideo?: boolean;
+  featureTags?: string;
   remote: {
     enabled: boolean;
     url: string;
@@ -19,6 +19,7 @@ const environments: Record<string, EnvironmentConfig> = {
     browser: 'chromium',
     headless: false,
     timeout: 30000,
+    featureTags: '@smoke',
     remote: {
       enabled: false,
       url: '',
@@ -29,6 +30,7 @@ const environments: Record<string, EnvironmentConfig> = {
     browser: 'chromium',
     headless: false,
     timeout: 30000,
+    featureTags: '@sanity',
     remote: {
       enabled: false,
       url: '',
@@ -39,6 +41,7 @@ const environments: Record<string, EnvironmentConfig> = {
     browser: 'chromium',
     headless: false,
     timeout: 30000,
+    featureTags: '',
     remote: {
       enabled: false,
       url: '',
@@ -62,6 +65,6 @@ export const getEnvironmentConfig = (): EnvironmentConfig => {
     slowMo: process.env.SLOW_MO ? Number(process.env.SLOW_MO) : config.slowMo,
     viewportWidth: process.env.VIEWPORT_WIDTH ? Number(process.env.VIEWPORT_WIDTH) : config.viewportWidth,
     viewportHeight: process.env.VIEWPORT_HEIGHT ? Number(process.env.VIEWPORT_HEIGHT) : config.viewportHeight,
-    recordVideo: process.env.RECORD_VIDEO ? process.env.RECORD_VIDEO.toLowerCase() === 'true' : config.recordVideo,
+    featureTags: process.env.FEATURE_TAGS || config.featureTags,
   };
 };

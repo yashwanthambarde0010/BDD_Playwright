@@ -48,16 +48,16 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: getWorkerCount(),
   reporter: [
-    ['list'],
-    ['html', { outputFolder: 'reports/playwright-html', open: 'never' }],
+    ['html', {
+      outputFolder: 'reports/extent-report',
+      open: 'never'
+    }]
   ],
   use: {
     baseURL: config.baseUrl,
     headless: config.headless,
     ignoreHTTPSErrors: true,
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
-    trace: 'on-first-retry',
     actionTimeout: config.timeout,
     launchOptions: {
       args: ['--start-maximized'],

@@ -23,8 +23,7 @@ This repository contains a scalable and modular Playwright automation test frame
 - Environment-based configuration (QA/UAT/PROD)
 - Excel-based test data reader
 - Headless and headed execution support
-- Allure and Extent reporting support
-- Screenshots, video, and trace capture on failures
+- HTML test reporting support with screenshots on failure
 - GitHub Actions CI pipeline for automated test runs
 
 ## Install
@@ -50,10 +49,20 @@ npm run test:cucumber
 
 ### Generate Reports
 
+Playwright generates an HTML report automatically during test execution.
+
 ```bash
-npm run report:allure
-npm run report:html
+npm test
 ```
+
+The generated report is written to `reports/extent-report`.
+Open it with:
+
+```bash
+npm run report:open
+```
+
+Or open `reports/extent-report/index.html` directly in your browser.
 
 ## Environment Variables
 

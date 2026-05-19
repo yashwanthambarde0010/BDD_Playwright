@@ -5,11 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test",
-    "test:parallel": "npx playwright test --workers=50%",
-    "test:cucumber": "npx cucumber-js --require-module ts-node/register --require features/**/*.ts --format json:reports/cucumber-report.json --format cucumber-js-extent:reports/extent-report.html --format allure-cucumberjs:reports/allure-results",
-    "report:allure": "allure generate reports/allure-results --clean -o reports/allure-report",
-    "report:html": "ts-node generate-reports.ts",
-    "test:report": "npm run test || true && npm run report:allure && npm run report:html"
+    "test:cucumber": "npx ts-node scripts/run-cucumber.ts",
+    "report:open": "npx playwright show-report reports/extent-report"
   },
   "keywords": [],
   "author": "",
@@ -18,10 +15,6 @@
     "@cucumber/cucumber": "^11.3.0",
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.18",
-    "allure-commandline": "^2.41.0",
-    "allure-cucumberjs": "^3.8.0",
-    "cucumber-html-reporter": "^7.2.0",
-    "cucumber-js-extent": "^0.1.0",
     "exceljs": "^4.4.0",
     "winston": "^3.9.0",
     "xlsx": "^0.18.5",

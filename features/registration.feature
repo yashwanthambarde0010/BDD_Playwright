@@ -3,6 +3,7 @@ Feature: Registration Feature
   I want to register for an account
   So that I can access the application
 
+  @sanity
   Scenario Outline: Validating the Registration Feature
     Given I navigate to the registration page
     When I enter the name as "<name>"
