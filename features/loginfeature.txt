@@ -1,0 +1,13 @@
+Feature: Login Feature
+As a user
+I want to log in to my account
+So that I can access my dashboard
+
+  Background:
+    Given I navgigate to the facebook page
+    When I validate the page title
+
+  Scenario: Successful login
+    Then I enter the username as "testuser"
+    And I enter the password as "testpassword"
+    And I click the login button
