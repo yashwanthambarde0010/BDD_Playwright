@@ -13,45 +13,20 @@ export interface EnvironmentConfig {
   };
 }
 
-const environments: Record<string, EnvironmentConfig> = {
-  qa: {
-    baseUrl: 'https://www.way2automation.com',
-    browser: 'chromium',
-    headless: false,
-    timeout: 30000,
-    featureTags: '@smoke',
-    remote: {
-      enabled: false,
-      url: '',
-    },
-  },
-  uat: {
-    baseUrl: 'https://www.way2automation.com',
-    browser: 'chromium',
-    headless: false,
-    timeout: 30000,
-    featureTags: '@sanity',
-    remote: {
-      enabled: false,
-      url: '',
-    },
-  },
-  prod: {
-    baseUrl: 'https://www.way2automation.com',
-    browser: 'chromium',
-    headless: false,
-    timeout: 30000,
-    featureTags: '',
-    remote: {
-      enabled: false,
-      url: '',
-    },
+const defaultEnvironment: EnvironmentConfig = {
+  baseUrl: 'https://www.way2automation.com',
+  browser: 'chromium',
+  headless: false,
+  timeout: 30000,
+  featureTags: '',
+  remote: {
+    enabled: false,
+    url: '',
   },
 };
 
 export const getEnvironmentConfig = (): EnvironmentConfig => {
-  const env = process.env.ENV?.toLowerCase() || 'qa';
-  const config = environments[env] || environments.qa;
+  const config = defaultEnvironment;
 
   return {
     ...config,

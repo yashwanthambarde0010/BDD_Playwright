@@ -6,7 +6,7 @@ export class EnvironmentHelper {
   }
 
   static getEnvironmentName(): string {
-    return process.env.ENV?.toLowerCase() || 'qa';
+    return 'default';
   }
 
   static getBaseUrl(): string {

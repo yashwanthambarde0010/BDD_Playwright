@@ -68,7 +68,7 @@ export default defineConfig({
   outputDir: 'reports/test-results',
   webServer: undefined,
   metadata: {
-    environment: process.env.ENV || 'qa',
+    environment: 'default',
     browser: process.env.BROWSER || config.browser,
   },
   globalSetup: undefined,
